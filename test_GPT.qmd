@@ -1,0 +1,159 @@
+---
+title: "Quarto Live – SQL Playground (PGlite Minimal)"
+format: html
+resources:
+  - assets/editor.js
+  - assets/db.js
+---
+
+```{ojs}
+editorUrl = FileAttachment("assets/editor.js").url()
+dbUrl     = FileAttachment("assets/db.js").url()
+
+editorMod = import(editorUrl)
+dbMod     = import(dbUrl)
+
+// Minimal-Seed (kannst du später ausbauen)
+seedSql = `
+  drop table if exists students;
+  create table students (
+    id   int primary key,
+    name text,
+    age  int
+  );
+  insert into students (id, name, age) values
+    (1, 'Ada', 20),
+    (2, 'Linus', 22),
+    (3, 'Edsger', 25);
+`
+
+// DB einmal initialisieren (Promise ist ok in OJS)
+dbPromise = dbMod.createDb(seedSql)
+
+play = {
+  const div = document.createElement("div");
+  div.style.display = "grid";
+  div.style.gap = "0.75rem";
+
+  // --- Editor ---
+  const host = document.createElement("div");
+  div.appendChild(host);
+
+  const cm = editorMod.mountEditor(
+    host,
+    "select * from students order by id;"
+  );
+
+  // --- Buttons ---
+  const row = document.createElement("div");
+  row.style.display = "flex";
+  row.style.gap = "0.5rem";
+  div.appendChild(row);
+
+  const btnRun = document.createElement("button");
+  btnRun.textContent = "Run Query";
+  row.appendChild(btnRun);
+
+  const btnSeed = document.createElement("button");
+  btnSeed.textContent = "Reset (re-seed)";
+  row.appendChild(btnSeed);
+
+  // --- Output ---
+  const out = document.createElement("div");
+  out.style.padding = "0.75rem";
+  out.style.border = "1px solid #eee";
+  out.style.borderRadius = "8px";
+  out.style.background = "#fafafa";
+  div.appendChild(out);
+
+  const setText = (t) => {
+    out.innerHTML = "";
+    const pre = document.createElement("pre");
+    pre.style.margin = "0";
+    pre.textContent = t;
+    out.appendChild(pre);
+  };
+
+  const renderRows = (rows) => {
+    out.innerHTML = "";
+    if (!rows || rows.length === 0) {
+      setText("0 rows.");
+      return;
+    }
+
+    const table = document.createElement("table");
+    table.style.width = "100%";
+    table.style.borderCollapse = "collapse";
+
+    const cols = Object.keys(rows[0]);
+
+    const thead = document.createElement("thead");
+    const hr = document.createElement("tr");
+    for (const c of cols) {
+      const th = document.createElement("th");
+      th.textContent = c;
+      th.style.textAlign = "left";
+      th.style.borderBottom = "1px solid #ddd";
+      th.style.padding = "6px 8px";
+      hr.appendChild(th);
+    }
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    for (const r of rows) {
+      const tr = document.createElement("tr");
+      for (const c of cols) {
+        const td = document.createElement("td");
+        const v = r[c];
+        td.textContent = v === null || v === undefined ? "" : String(v);
+        td.style.borderBottom = "1px solid #eee";
+        td.style.padding = "6px 8px";
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+
+    out.appendChild(table);
+  };
+
+  // --- Actions ---
+  let db = null;
+
+  const ensureDb = async () => {
+    if (!db) db = await dbPromise;
+    return db;
+  };
+
+  btnRun.onclick = async () => {
+    btnRun.disabled = true;
+    try {
+      const sql = cm.getValue();
+      const theDb = await ensureDb();
+      const res = await dbMod.runSql(theDb, sql);
+
+      if (res.kind === "rows") renderRows(res.rows);
+      else if (res.kind === "ok") setText("OK.");
+      else if (res.kind === "empty") setText("Enter SQL first.");
+      else setText("Error:\n" + res.message);
+    } finally {
+      btnRun.disabled = false;
+    }
+  };
+
+  btnSeed.onclick = async () => {
+    btnSeed.disabled = true;
+    try {
+      // simplest reset: neue DB erzeugen
+      db = await dbMod.createDb(seedSql);
+      setText("DB reset + seeded.");
+    } finally {
+      btnSeed.disabled = false;
+    }
+  };
+
+  setText("Ready. Try: select * from students;");
+  return div;
+}
+```

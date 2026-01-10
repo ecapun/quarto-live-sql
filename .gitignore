@@ -1,0 +1,4 @@
+# Quarto output
+*_files/
+*.html
+.quarto/

@@ -1,0 +1,12 @@
+---
+title: "Quarto - Live: Main"
+format: html
+
+---
+
+```{ojs}
+// Here (in this ojs Block) we import our REPL
+import { mountMiniRepl } from "./mini-repl.js"
+mountMiniRepl()
+
+```
