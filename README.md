@@ -1,4 +1,4 @@
-# Quarto Live SQL (Bachelorarbeit)
+# Quarto Live SQL
 
 Minimaler, browserbasierter SQL-REPL für Quarto Live.  
 PostgreSQL läuft vollständig im Browser (PGlite/WASM) – kein Server, kein Docker.
