@@ -14,3 +14,7 @@ Dann im Terminal:
 quarto preview main.qmd
 ```
 eingeben und ausüfhren.
+
+```markdown
+main.qmd
+```
