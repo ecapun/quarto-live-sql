@@ -9,8 +9,8 @@ Voraussetzung: Quarto installiert
 https://quarto.org/docs/get-started/
 
 In das Projekt root Verzeichnis wechseln.
-Dann im Termianl
+Dann im Terminal:
 ```bash
 quarto preview main.qmd
 ```
-ausüfhren.
+eingeben und ausüfhren.
