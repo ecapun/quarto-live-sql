@@ -19,11 +19,15 @@ export async function mountMiniRepl() {
     const out = document.createElement("pre")
     root.appendChild(out)
     
-    btn.onclick = async () => {
+    async function run(sql) {
+        return db.query(sql || "SELECT 1;")
+    }
 
-        const res = await db.query(input.value || "SELECT 1;")
+    btn.onclick = async () => {
+        const res = await run(input.value)
         out.textContent = JSON.stringify(res, null, 2)
     }
+
     
     // Creating a empty WASM DB
     const db = new PGlite()
