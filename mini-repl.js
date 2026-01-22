@@ -18,22 +18,19 @@ export async function mountMiniRepl() {
     // Creating a <pre> for showing the query results
     const out = document.createElement("pre")
     root.appendChild(out)
-    
-    async function run(sql) {
-        return db.query(sql || "SELECT 1;")
-    }
 
-    btn.onclick = async () => {
-        const res = await run(input.value)
-        out.textContent = JSON.stringify(res, null, 2)
-    }
-
-    
     // Creating a empty WASM DB
     const db = new PGlite()
 
     // Creating a demo table for testing queris
     // Demo-Query: SELECT * FROM demo
     await db.exec("CREATE TABLE demo (id INT, name TEXT); INSERT INTO demo VALUES (1, 'Alice'), (2, 'Bob');")
+    
+    btn.onclick = async () => {
+
+        const res = await db.query(input.value || "SELECT 1;")
+        out.textContent = JSON.stringify(res, null, 2)
+    }
+    
     return root
 }
