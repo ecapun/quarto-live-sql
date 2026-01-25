@@ -24,11 +24,50 @@ export async function mountMiniRepl() {
 
     // Creating a demo table for testing queris
     // Demo-Query: SELECT * FROM demo
-    await db.exec("CREATE TABLE demo (id INT, name TEXT); INSERT INTO demo VALUES (1, 'Alice'), (2, 'Bob');")
-    
-    btn.onclick = async () => {
+    // await db.exec("CREATE TABLE demo (id INT, name TEXT); INSERT INTO demo VALUES (1, 'Alice'), (2, 'Bob');")
 
-        const res = await db.query(input.value || "SELECT 1;")
+    let beforeAllRan = false;
+
+    const beforeEach = new Map();
+    
+    function addBeforeEach(exerciseId, sql) {
+        if (!beforeEach.has(exerciseId)) {
+            beforeEach.set(exerciseId, []);
+        }
+        beforeEach.get(exerciseId).push(sql);
+    }
+    
+
+    async function run(sql, exerciseId) {
+
+        if (!beforeAllRan) {
+            await db.exec(
+            "CREATE TABLE demo (id INT, name TEXT);"
+            );
+            await db.exec(
+            "INSERT INTO demo VALUES (1, 'Alice'), (2, 'Bob');"
+            );
+            beforeAllRan = true;
+        }
+
+        const setupSqlList = beforeEach.get(exerciseId) ?? [];
+        for (const setupSql of setupSqlList) {
+            await db.exec(setupSql);
+        }
+
+        return db.query(sql || "SELECT 1;");
+    }
+
+
+
+    addBeforeEach(
+        "test_1",
+        "INSERT INTO demo VALUES (3, 'Eve');"
+    );
+
+
+    btn.onclick = async () => {
+        const res = await run(input.value, "test_1")
         out.textContent = JSON.stringify(res, null, 2)
     }
     
