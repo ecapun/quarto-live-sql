@@ -144,3 +144,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 >>>>>>> 51988bcdbc80d35205c3e7d32a31657b487aac79
+
+/.quarto/
+**/*.quarto_ipynb
