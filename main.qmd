@@ -3,6 +3,8 @@ title: "SQLREPL Minimal"
 format: html
 execute:
   enabled: false
+filters:
+- sqlrepl/_extensions/sqlrepl/sqlrepl.lua
 ---
 
 

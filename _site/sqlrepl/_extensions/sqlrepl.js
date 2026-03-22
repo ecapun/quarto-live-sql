@@ -3,7 +3,7 @@ import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/i
 const db = new PGlite();
 
 async function run() {
-  const cells = document.querySelectorAll(".sqlrepl-cell"); // exakt deine Klasse
+  const cells = document.querySelectorAll(".sqlrepl-cell");
   console.log("sqlrepl: cells", cells.length);
 
   for (const cell of cells) {
