@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "sqlrepl/example.html",
+    "href": "sqlrepl/example.html",
+    "title": "Sqlrepl Example",
+    "section": "",
+    "text": "This filter adds formatting to heading text."
+  },
+  {
+    "objectID": "sqlrepl/example.html#heading",
+    "href": "sqlrepl/example.html#heading",
+    "title": "Sqlrepl Example",
+    "section": "",
+    "text": "This filter adds formatting to heading text."
+  },
+  {
+    "objectID": "main.html",
+    "href": "main.html",
+    "title": "SQLREPL Minimal",
+    "section": "",
+    "text": "CREATE TABLE demo (id INT, name TEXT);\nINSERT INTO demo VALUES (1, 'Alice'), (2, 'Bob');\n\n\nSELECT * FROM demo;"
+  }
+]

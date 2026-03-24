@@ -1,12 +1,18 @@
 ---
-title: "Quarto - Live: Main"
+title: "SQLREPL Minimal"
 format: html
-
+execute:
+  enabled: false
+filters:
+- sqlrepl/_extensions/sqlrepl/sqlrepl.lua
 ---
 
-```{ojs}
-// Here (in this ojs Block) we import our REPL
-import { mountMiniRepl } from "./mini-repl.js"
-mountMiniRepl()
 
+```sqlrepl
+CREATE TABLE demo (id INT, name TEXT);
+INSERT INTO demo VALUES (1, 'Alice'), (2, 'Bob');
+```
+
+```sqlrepl
+SELECT * FROM demo;
 ```
