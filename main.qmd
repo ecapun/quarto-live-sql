@@ -9,10 +9,10 @@ filters:
 
 
 ```sqlrepl
-CREATE TABLE demo (id INT, name TEXT);
-INSERT INTO demo VALUES (1, 'Alice'), (2, 'Bob');
+CREATE TABLE demotable (id INT, name TEXT);
+INSERT INTO demotable VALUES (1, 'Alice'), (2, 'Bob');
 ```
 
 ```sqlrepl
-SELECT * FROM demo;
+SELECT * FROM demotable;
 ```
