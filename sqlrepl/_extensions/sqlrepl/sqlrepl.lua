@@ -10,8 +10,8 @@ function CodeBlock(cb)
 
   -- Div-Inhalt muss aus Blocks bestehen, nicht String
   local div = pandoc.Div(
-    { pandoc.Plain({ pandoc.Str(cb.text) }) },
-    pandoc.Attr("", { "sqlrepl-cell" }, {})
+  {},
+  pandoc.Attr("", { "sqlrepl-cell" }, { { "data-sql", cb.text } })
   )
 
   if injected then
@@ -20,9 +20,27 @@ function CodeBlock(cb)
 
   injected = true
 
-local script = pandoc.RawBlock("html", [[
-<script type="module" src="./sqlrepl/_extensions/sqlrepl.js"></script>
-]])
+  local script = pandoc.RawBlock("html", [[
+    <script type="module" src="./sqlrepl/_extensions/sqlrepl.js"></script>
+    ]]
+  )
 
-  return { script, div }
+  local css = pandoc.RawBlock("html", [[
+    <style>
+    .sqlrepl-table {
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .sqlrepl-table th,
+    .sqlrepl-table td {
+      border: 1px solid #ccc;
+      padding: 4px 8px;
+      text-align: left;
+    }
+    </style>
+    ]]
+  )
+
+  return { script, css, div }
 end

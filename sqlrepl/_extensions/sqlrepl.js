@@ -7,26 +7,68 @@ async function run() {
   console.log("sqlrepl: cells", cells.length);
 
   for (const cell of cells) {
-    const sql = cell.textContent.trim();
+    const sql = cell.dataset.sql?.trim();
     if (!sql) continue;
+
+    const output = document.createElement("div");
+    output.className = "sqlrepl-output";
+    cell.appendChild(output);
+
+    const pre = document.createElement("pre");
 
     try {
       const isSelect = /^\s*select\b/i.test(sql);
-      const pre = document.createElement("pre");
 
       if (isSelect) {
         const res = await db.query(sql);
-        pre.textContent = JSON.stringify(res, null, 2);
+        const rows = res.rows ?? [];
+
+        if (rows.length === 0) {
+          pre.textContent = "No rows";
+          output.appendChild(pre);
+        } else {
+          const table = document.createElement("table");
+          table.className = "sqlrepl-table";
+          
+          const thead = document.createElement("thead");
+          const headerRow = document.createElement("tr");
+
+          const columns = Object.keys(rows[0]);
+          for (const col of columns) {
+            const th = document.createElement("th");
+            th.textContent = col;
+            headerRow.appendChild(th);
+          }
+
+          thead.appendChild(headerRow);
+          table.appendChild(thead);
+
+          const tbody = document.createElement("tbody");
+
+          for (const row of rows) {
+            const tr = document.createElement("tr");
+
+            for (const col of columns) {
+              const td = document.createElement("td");
+              const value = row[col];
+              td.textContent = value == null ? "" : String(value);
+              tr.appendChild(td);
+            }
+
+            tbody.appendChild(tr);
+          }
+
+          table.appendChild(tbody);
+          output.appendChild(table);
+        }
       } else {
         await db.exec(sql);
         pre.textContent = "OK";
+        output.appendChild(pre);
       }
-
-      cell.appendChild(pre);
     } catch (e) {
-      const pre = document.createElement("pre");
       pre.textContent = String(e?.message ?? e);
-      cell.appendChild(pre);
+      output.appendChild(pre);
       console.error("sqlrepl error", e, { sql });
     }
   }
