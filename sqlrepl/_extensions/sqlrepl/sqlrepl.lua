@@ -1,6 +1,7 @@
 print("lua is running.")
 local injected = false
 
+
 ---@diagnostic disable: undefined-global
 ---@param cb any
 function CodeBlock(cb)
@@ -8,11 +9,18 @@ function CodeBlock(cb)
     return nil
   end
 
+  local lifecycle = cb.attributes["lifecycle"]
+  local group = cb.attributes["group"]
+  print("lifecycle:", lifecycle)
+  print("group:", group)
+
   -- Div-Inhalt muss aus Blocks bestehen, nicht String
   local div = pandoc.Div(
   {},
-  pandoc.Attr("", { "sqlrepl-cell" }, { { "data-sql", cb.text } })
-  )
+  pandoc.Attr("", { "sqlrepl-cell" }, { { ["data-sql"] = cb.text,
+                                          ["data-lifecycle"] = lifecycle or "",
+                                          ["data-group"] = group or "" } })
+                                        )
 
   if injected then
     return div

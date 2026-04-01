@@ -8,9 +8,12 @@ filters:
 ---
 
 
-```sqlrepl
+```sqlrepl 
 CREATE TABLE demotable (id INT, name TEXT);
-INSERT INTO demotable VALUES (1, 'Alice'), (2, 'Bob');
+```
+
+```{.sqlrepl lifecycle="beforeEach" group="demo1"}
+INSERT INTO demotable VALUES (1, 'Alice');
 ```
 
 ```sqlrepl
