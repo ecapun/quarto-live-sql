@@ -10,6 +10,15 @@ async function run() {
     const sql = cell.dataset.sql?.trim();
     if (!sql) continue;
 
+    const statements = sql
+      .split(";")
+      .map(s => s.trim())   
+      .filter(s => s.length > 0); // Handle multiple statements separated by semicolons
+
+    const lastStatement = statements[statements.length - 1];
+    const setupStatements = statements.slice(0, -1);
+
+
     const output = document.createElement("div");
     output.className = "sqlrepl-output";
     cell.appendChild(output);
@@ -17,10 +26,14 @@ async function run() {
     const pre = document.createElement("pre");
 
     try {
-      const isSelect = /^\s*select\b/i.test(sql);
+      for (const stmt of setupStatements) {
+        await db.exec(stmt);
+      }
+
+      const isSelect = /^\s*select\b/i.test(lastStatement);
 
       if (isSelect) {
-        const res = await db.query(sql);
+        const res = await db.query(lastStatement);
         const rows = res.rows ?? [];
 
         if (rows.length === 0) {
@@ -62,7 +75,7 @@ async function run() {
           output.appendChild(table);
         }
       } else {
-        await db.exec(sql);
+        await db.exec(lastStatement);
         pre.textContent = "OK";
         output.appendChild(pre);
       }
