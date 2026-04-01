@@ -11,15 +11,13 @@ function CodeBlock(cb)
 
   local lifecycle = cb.attributes["lifecycle"]
   local group = cb.attributes["group"]
-  print("lifecycle:", lifecycle)
-  print("group:", group)
 
   -- Div-Inhalt muss aus Blocks bestehen, nicht String
   local div = pandoc.Div(
   {},
-  pandoc.Attr("", { "sqlrepl-cell" }, { { ["data-sql"] = cb.text,
-                                          ["data-lifecycle"] = lifecycle or "",
-                                          ["data-group"] = group or "" } })
+  pandoc.Attr("", { "sqlrepl-cell" }, {  { "data-sql", cb.text },
+                                          { "data-lifecycle", lifecycle or "" },
+                                          { "data-group", group or ""  } })
                                         )
 
   if injected then

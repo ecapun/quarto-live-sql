@@ -8,7 +8,7 @@ filters:
 ---
 
 
-```sqlrepl 
+```{.sqlrepl} 
 CREATE TABLE demotable (id INT, name TEXT);
 ```
 
@@ -16,6 +16,6 @@ CREATE TABLE demotable (id INT, name TEXT);
 INSERT INTO demotable VALUES (1, 'Alice');
 ```
 
-```sqlrepl
+```{.sqlrepl}
 SELECT * FROM demotable;
 ```

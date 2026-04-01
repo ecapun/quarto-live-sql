@@ -10,10 +10,13 @@ async function run() {
     const sql = cell.dataset.sql?.trim();
     if (!sql) continue;
 
+    const lifecycle = cell.dataset.lifecycle || "main";
+    const group = cell.dataset.group || "";
     const statements = sql
       .split(";")
       .map(s => s.trim())   
       .filter(s => s.length > 0); // Handle multiple statements separated by semicolons
+    console.log("sqlrepl block", { lifecycle, group, sql });
 
     const lastStatement = statements[statements.length - 1];
     const setupStatements = statements.slice(0, -1);
