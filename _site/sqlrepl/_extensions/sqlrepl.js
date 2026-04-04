@@ -6,18 +6,36 @@ async function run() {
   const cells = document.querySelectorAll(".sqlrepl-cell");
   console.log("sqlrepl: cells", cells.length);
 
+  // First pass to collect beforeEach statements by group
+  const beforeEachByGroup = new Map();
+  for (const cell of cells) {
+    const lifecycle = cell.dataset.lifecycle || "main";
+    const group = cell.dataset.group || "";
+    const sql = cell.dataset.sql?.trim();
+
+    if (!sql) continue;
+    if (lifecycle !== "beforeEach") continue;
+    if (!group) continue;
+
+    beforeEachByGroup.set(group, sql);
+  }
+  
   for (const cell of cells) {
     const sql = cell.dataset.sql?.trim();
     if (!sql) continue;
 
     const lifecycle = cell.dataset.lifecycle || "main";
     const group = cell.dataset.group || "";
+    if (lifecycle === "beforeEach") { // already handled in the first pass, maybe delete this block
+      continue; 
+    }
+
+    // Handle multiple statements separated by semicolons
     const statements = sql
       .split(";")
       .map(s => s.trim())   
-      .filter(s => s.length > 0); // Handle multiple statements separated by semicolons
+      .filter(s => s.length > 0); 
     console.log("sqlrepl block", { lifecycle, group, sql });
-
     const lastStatement = statements[statements.length - 1];
     const setupStatements = statements.slice(0, -1);
 
@@ -29,6 +47,16 @@ async function run() {
     const pre = document.createElement("pre");
 
     try {
+
+      // If this is a main lifecycle block, run the beforeEach for its group (if any)
+      const beforeEachSql = group ? beforeEachByGroup.get(group) : null;
+      if (lifecycle === "main" && beforeEachSql) {
+        await db.exec(beforeEachSql);
+        console.log(`sqlrepl: ran beforeEach for group "${group}"
+          "${beforeEachSql}"`);
+      }
+
+      // Run any setup statements before the last statement
       for (const stmt of setupStatements) {
         await db.exec(stmt);
       }

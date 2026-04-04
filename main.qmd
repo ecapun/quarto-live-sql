@@ -8,14 +8,15 @@ filters:
 ---
 
 
-```{.sqlrepl} 
+```{.sqlrepl lifecycle="beforeAll" group="demo1"}
 CREATE TABLE demotable (id INT, name TEXT);
 ```
 
 ```{.sqlrepl lifecycle="beforeEach" group="demo1"}
+DELETE FROM demotable;
 INSERT INTO demotable VALUES (1, 'Alice');
 ```
 
-```{.sqlrepl}
+```{.sqlrepl lifecycle="main" group="demo1"}
 SELECT * FROM demotable;
 ```
