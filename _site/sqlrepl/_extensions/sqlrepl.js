@@ -43,7 +43,6 @@ async function run() {
     const output = document.createElement("div");
     output.className = "sqlrepl-output";
     cell.appendChild(output);
-
     const pre = document.createElement("pre");
 
     try {
