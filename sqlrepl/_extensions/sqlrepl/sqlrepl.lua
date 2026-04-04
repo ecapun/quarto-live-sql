@@ -3,7 +3,6 @@ local injected = false
 
 
 ---@diagnostic disable: undefined-global
----@param cb any
 function CodeBlock(cb)
   if not cb.classes:includes("sqlrepl") then
     return nil
