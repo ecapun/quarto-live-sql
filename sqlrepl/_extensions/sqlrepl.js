@@ -6,7 +6,9 @@ async function run() {
   const cells = document.querySelectorAll(".sqlrepl-cell");
   console.log("sqlrepl: cells", cells.length);
 
-  // First pass to collect beforeEach statements by group
+  // First pass to collect beforeAll and beforeEach statements by group
+  const beforeAllByGroup = new Map();
+  const executedBeforeAllGroups = new Set();
   const beforeEachByGroup = new Map();
   for (const cell of cells) {
     const lifecycle = cell.dataset.lifecycle || "main";
@@ -14,10 +16,15 @@ async function run() {
     const sql = cell.dataset.sql?.trim();
 
     if (!sql) continue;
-    if (lifecycle !== "beforeEach") continue;
     if (!group) continue;
 
-    beforeEachByGroup.set(group, sql);
+    if (lifecycle === "beforeEach") {
+      beforeEachByGroup.set(group, sql);
+    }
+
+    if (lifecycle === "beforeAll") {
+      beforeAllByGroup.set(group, sql);
+    }
   }
   
   for (const cell of cells) {
@@ -46,6 +53,13 @@ async function run() {
     const pre = document.createElement("pre");
 
     try {
+
+      // If this is a main lifecycle block, run the beforeAll for its group (if any, and if not already run)
+      const beforeAllSql = group ? beforeAllByGroup.get(group) : null;
+      if (lifecycle === "main" && group && beforeAllSql && !executedBeforeAllGroups.has(group)) {
+        await db.exec(beforeAllSql);
+        executedBeforeAllGroups.add(group);
+      }
 
       // If this is a main lifecycle block, run the beforeEach for its group (if any)
       const beforeEachSql = group ? beforeEachByGroup.get(group) : null;

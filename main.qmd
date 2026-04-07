@@ -9,6 +9,7 @@ filters:
 
 
 ```{.sqlrepl lifecycle="beforeAll" group="demo1"}
+DROP TABLE IF EXISTS demotable;
 CREATE TABLE demotable (id INT, name TEXT);
 ```
 
