@@ -18,6 +18,6 @@
     "href": "main.html",
     "title": "SQLREPL Minimal",
     "section": "",
-    "text": "CREATE TABLE demo (id INT, name TEXT);\nINSERT INTO demo VALUES (1, 'Alice'), (2, 'Bob');\n\n\nSELECT * FROM demo;"
+    "text": "beforeAll · demo1\n\n\nbeforeEach · demo1\n\n\nmain · demo1"
   }
 ]

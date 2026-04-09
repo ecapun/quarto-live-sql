@@ -1,10 +1,12 @@
 ---
 title: "SQLREPL Minimal"
 format: html
+page-layout: full
+toc: false
 execute:
   enabled: false
 filters:
-- sqlrepl/_extensions/sqlrepl/sqlrepl.lua
+  - sqlrepl/_extensions/sqlrepl/sqlrepl.lua
 ---
 
 
@@ -15,9 +17,39 @@ CREATE TABLE demotable (id INT, name TEXT);
 
 ```{.sqlrepl lifecycle="beforeEach" group="demo1"}
 DELETE FROM demotable;
-INSERT INTO demotable VALUES (1, 'Alice');
+INSERT INTO demotable VALUES
+  (1, 'Alice'),
+  (2, 'Bob'),
+  (3, 'Charlie'),
+  (4, 'David'),
+  (5, 'Emma'),
+  (6, 'Frank'),
+  (7, 'Grace'),
+  (8, 'Hannah'),
+  (9, 'Isaac'),
+  (10, 'Julia'),
+  (11, 'Kevin'),
+  (12, 'Laura'),
+  (13, 'Michael'),
+  (14, 'Nina'),
+  (15, 'Oliver'),
+  (16, 'Paula'),
+  (17, 'Quentin'),
+  (18, 'Rachel'),
+  (19, 'Sam'),
+  (20, 'Tina'),
+  (21, 'Umar'),
+  (22, 'Victoria'),
+  (23, 'William'),
+  (24, 'Xenia'),
+  (25, 'Yusuf'),
+  (26, 'Zara'),
+  (27, 'Adrian'),
+  (28, 'Bianca'),
+  (29, 'Cedric'),
+  (30, 'Diana');
 ```
 
 ```{.sqlrepl lifecycle="main" group="demo1"}
-SELECT * FROM demotable;
+
 ```

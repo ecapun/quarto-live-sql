@@ -1,132 +1,80 @@
 import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+import "https://cdn.jsdelivr.net/npm/@electric-sql/pglite-repl/dist-webcomponent/Repl.js";
 
-const db = new PGlite();
+const db = await PGlite.create();
 
 async function run() {
   const cells = document.querySelectorAll(".sqlrepl-cell");
   console.log("sqlrepl: cells", cells.length);
 
-  // First pass to collect beforeAll and beforeEach statements by group
   const beforeAllByGroup = new Map();
-  const executedBeforeAllGroups = new Set();
   const beforeEachByGroup = new Map();
+  const executedBeforeAllGroups = new Set();
+
+  // 1. Lifecycle-Blöcke einsammeln
   for (const cell of cells) {
     const lifecycle = cell.dataset.lifecycle || "main";
     const group = cell.dataset.group || "";
     const sql = cell.dataset.sql?.trim();
 
-    if (!sql) continue;
-    if (!group) continue;
-
-    if (lifecycle === "beforeEach") {
-      beforeEachByGroup.set(group, sql);
-    }
+    if (!sql || !group) continue;
 
     if (lifecycle === "beforeAll") {
       beforeAllByGroup.set(group, sql);
     }
-  }
-  
-  for (const cell of cells) {
-    const sql = cell.dataset.sql?.trim();
-    if (!sql) continue;
 
+    if (lifecycle === "beforeEach") {
+      beforeEachByGroup.set(group, sql);
+    }
+  }
+
+  // 2. Nur main-Blöcke mounten
+  for (const cell of cells) {
     const lifecycle = cell.dataset.lifecycle || "main";
     const group = cell.dataset.group || "";
-    if (lifecycle === "beforeEach") { // already handled in the first pass, maybe delete this block
-      continue; 
-    }
+    const initialSql = cell.dataset.sql?.trim();
 
-    // Handle multiple statements separated by semicolons
-    const statements = sql
-      .split(";")
-      .map(s => s.trim())   
-      .filter(s => s.length > 0); 
-    console.log("sqlrepl block", { lifecycle, group, sql });
-    const lastStatement = statements[statements.length - 1];
-    const setupStatements = statements.slice(0, -1);
-
-
-    const output = document.createElement("div");
-    output.className = "sqlrepl-output";
-    cell.appendChild(output);
-    const pre = document.createElement("pre");
+    if (lifecycle !== "main") continue;
 
     try {
-
-      // If this is a main lifecycle block, run the beforeAll for its group (if any, and if not already run)
       const beforeAllSql = group ? beforeAllByGroup.get(group) : null;
-      if (lifecycle === "main" && group && beforeAllSql && !executedBeforeAllGroups.has(group)) {
+      if (group && beforeAllSql && !executedBeforeAllGroups.has(group)) {
         await db.exec(beforeAllSql);
         executedBeforeAllGroups.add(group);
       }
 
-      // If this is a main lifecycle block, run the beforeEach for its group (if any)
       const beforeEachSql = group ? beforeEachByGroup.get(group) : null;
-      if (lifecycle === "main" && beforeEachSql) {
+      if (group && beforeEachSql) {
         await db.exec(beforeEachSql);
-        console.log(`sqlrepl: ran beforeEach for group "${group}"
-          "${beforeEachSql}"`);
       }
 
-      // Run any setup statements before the last statement
-      for (const stmt of setupStatements) {
-        await db.exec(stmt);
+      const mount = cell.querySelector(".sqlrepl-editor");
+      if (!mount) continue;
+
+      mount.style.width = "100%";
+      mount.style.maxWidth = "100%";
+      mount.style.minWidth = "0";
+
+      const repl = document.createElement("pglite-repl");
+      repl.pg = db;
+
+      if (initialSql) {
+        repl.setAttribute("value", initialSql);
       }
+            
+      repl.style.display = "block";
+      repl.style.width = "100%";
+      repl.style.maxWidth = "100%";
+      repl.style.minWidth = "0";
+      repl.style.minHeight = "600px";
+      repl.style.height = "600px";
+      mount.appendChild(repl);
 
-      const isSelect = /^\s*select\b/i.test(lastStatement);
+      console.log("mount width", mount.clientWidth);
+      console.log("repl width", repl.clientWidth);
 
-      if (isSelect) {
-        const res = await db.query(lastStatement);
-        const rows = res.rows ?? [];
-
-        if (rows.length === 0) {
-          pre.textContent = "No rows";
-          output.appendChild(pre);
-        } else {
-          const table = document.createElement("table");
-          table.className = "sqlrepl-table";
-          
-          const thead = document.createElement("thead");
-          const headerRow = document.createElement("tr");
-
-          const columns = Object.keys(rows[0]);
-          for (const col of columns) {
-            const th = document.createElement("th");
-            th.textContent = col;
-            headerRow.appendChild(th);
-          }
-
-          thead.appendChild(headerRow);
-          table.appendChild(thead);
-
-          const tbody = document.createElement("tbody");
-
-          for (const row of rows) {
-            const tr = document.createElement("tr");
-
-            for (const col of columns) {
-              const td = document.createElement("td");
-              const value = row[col];
-              td.textContent = value == null ? "" : String(value);
-              tr.appendChild(td);
-            }
-
-            tbody.appendChild(tr);
-          }
-
-          table.appendChild(tbody);
-          output.appendChild(table);
-        }
-      } else {
-        await db.exec(lastStatement);
-        pre.textContent = "OK";
-        output.appendChild(pre);
-      }
     } catch (e) {
-      pre.textContent = String(e?.message ?? e);
-      output.appendChild(pre);
-      console.error("sqlrepl error", e, { sql });
+      console.error("sqlrepl lifecycle/mount error", e, { group, initialSql });
     }
   }
 }
