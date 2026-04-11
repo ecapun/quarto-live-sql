@@ -18,6 +18,27 @@
     "href": "main.html",
     "title": "SQLREPL Minimal",
     "section": "",
-    "text": "beforeAll · demo1\n\n\nbeforeEach · demo1\n\n\nmain · demo1"
+    "text": "setup · demo1"
+  },
+  {
+    "objectID": "main.html#setup",
+    "href": "main.html#setup",
+    "title": "SQLREPL Minimal",
+    "section": "",
+    "text": "setup · demo1"
+  },
+  {
+    "objectID": "main.html#exercise",
+    "href": "main.html#exercise",
+    "title": "SQLREPL Minimal",
+    "section": "Exercise",
+    "text": "Exercise\n\nexercise · demo1 · task1"
+  },
+  {
+    "objectID": "main.html#check",
+    "href": "main.html#check",
+    "title": "SQLREPL Minimal",
+    "section": "Check",
+    "text": "Check\n\ncheck · demo1 · task1"
   }
 ]

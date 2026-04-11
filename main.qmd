@@ -1,55 +1,39 @@
 ---
 title: "SQLREPL Minimal"
 format: html
-page-layout: full
-toc: false
 execute:
   enabled: false
 filters:
   - sqlrepl/_extensions/sqlrepl/sqlrepl.lua
 ---
 
+## Setup
 
-```{.sqlrepl lifecycle="beforeAll" envir="demo1"}
-DROP TABLE IF EXISTS demotable;
-CREATE TABLE demotable (id INT, name TEXT);
+```{.sqlrepl setup="true" envir="demo1"}
+CREATE TABLE demo (
+  id INTEGER PRIMARY KEY,
+  name TEXT
+);
+
+INSERT INTO demo VALUES (1, 'Ada'), (2, 'Linus');
 ```
 
-```{.sqlrepl lifecycle="beforeEach" envir="demo1"}
-DELETE FROM demotable;
-INSERT INTO demotable VALUES
-  (1, 'Alice'),
-  (2, 'Bob'),
-  (3, 'Charlie'),
-  (4, 'David'),
-  (5, 'Emma'),
-  (6, 'Frank'),
-  (7, 'Grace'),
-  (8, 'Hannah'),
-  (9, 'Isaac'),
-  (10, 'Julia'),
-  (11, 'Kevin'),
-  (12, 'Laura'),
-  (13, 'Michael'),
-  (14, 'Nina'),
-  (15, 'Oliver'),
-  (16, 'Paula'),
-  (17, 'Quentin'),
-  (18, 'Rachel'),
-  (19, 'Sam'),
-  (20, 'Tina'),
-  (21, 'Umar'),
-  (22, 'Victoria'),
-  (23, 'William'),
-  (24, 'Xenia'),
-  (25, 'Yusuf'),
-  (26, 'Zara'),
-  (27, 'Adrian'),
-  (28, 'Bianca'),
-  (29, 'Cedric'),
-  (30, 'Diana');
+## Exercise
+
+```{.sqlrepl envir="demo1" exercise="task1"}
+
 ```
 
-```{.sqlrepl lifecycle="main" envir="demo1"}
+## Check
 
+```{.sqlrepl envir="demo1" exercise="task1" check="true"}
+SELECT
+  CASE
+    WHEN (SELECT COUNT(*) FROM demo) = 2 THEN true
+    ELSE false
+  END AS passed,
+  CASE
+    WHEN (SELECT COUNT(*) FROM demo) = 2 THEN 'Richtig'
+    ELSE 'Es wurden nicht 2 Zeilen gefunden'
+  END AS message;
 ```
