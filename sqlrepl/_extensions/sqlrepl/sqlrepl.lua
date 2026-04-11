@@ -8,11 +8,11 @@ function CodeBlock(cb)
   end
 
   local lifecycle = cb.attributes["lifecycle"] or "main"
-  local group = cb.attributes["group"] or ""
+  local envir = cb.attributes["envir"] or ""
 
   local badgeText = lifecycle
-  if group ~= "" then
-    badgeText = badgeText .. " · " .. group
+  if envir ~= "" then
+    badgeText = badgeText .. " · " .. envir
   end
 
   local content = {
@@ -28,7 +28,7 @@ function CodeBlock(cb)
     pandoc.Attr("", { "sqlrepl-cell" }, {
       { "data-sql", cb.text },
       { "data-lifecycle", lifecycle },
-      { "data-group", group }
+      { "data-envir", envir }
     })
   )
 
