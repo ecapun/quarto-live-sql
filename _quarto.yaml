@@ -1,0 +1,10 @@
+project:
+  type: website
+
+format: html
+
+execute:
+  enabled: false
+
+filters:
+  - sqlrepl/_extensions/sqlrepl/sqlrepl.lua

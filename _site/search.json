@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "sqlrepl/example.html",
+    "href": "sqlrepl/example.html",
+    "title": "Sqlrepl Example",
+    "section": "",
+    "text": "This filter adds formatting to heading text."
+  },
+  {
+    "objectID": "sqlrepl/example.html#heading",
+    "href": "sqlrepl/example.html#heading",
+    "title": "Sqlrepl Example",
+    "section": "",
+    "text": "This filter adds formatting to heading text."
+  },
+  {
+    "objectID": "main.html",
+    "href": "main.html",
+    "title": "SQLREPL Minimal",
+    "section": "",
+    "text": "setup · demo1"
+  },
+  {
+    "objectID": "main.html#setup",
+    "href": "main.html#setup",
+    "title": "SQLREPL Minimal",
+    "section": "",
+    "text": "setup · demo1"
+  },
+  {
+    "objectID": "main.html#exercise",
+    "href": "main.html#exercise",
+    "title": "SQLREPL Minimal",
+    "section": "Exercise",
+    "text": "Exercise\n\nexercise · demo1 · task1"
+  },
+  {
+    "objectID": "main.html#check",
+    "href": "main.html#check",
+    "title": "SQLREPL Minimal",
+    "section": "Check",
+    "text": "Check\n\ncheck · demo1 · task1"
+  }
+]

@@ -1,12 +1,39 @@
 ---
-title: "Quarto - Live: Main"
+title: "SQLREPL Minimal"
 format: html
-
+execute:
+  enabled: false
+filters:
+  - sqlrepl/_extensions/sqlrepl/sqlrepl.lua
 ---
 
-```{ojs}
-// Here (in this ojs Block) we import our REPL
-import { mountMiniRepl } from "./mini-repl.js"
-mountMiniRepl()
+## Setup
 
+```{.sqlrepl setup="true" envir="demo1"}
+CREATE TABLE demo (
+  id INTEGER PRIMARY KEY,
+  name TEXT
+);
+
+INSERT INTO demo VALUES (1, 'Ada'), (2, 'Linus');
+```
+
+## Exercise
+
+```{.sqlrepl envir="demo1" exercise="task1"}
+
+```
+
+## Check
+
+```{.sqlrepl envir="demo1" exercise="task1" check="true"}
+SELECT
+  CASE
+    WHEN (SELECT COUNT(*) FROM demo) = 2 THEN true
+    ELSE false
+  END AS passed,
+  CASE
+    WHEN (SELECT COUNT(*) FROM demo) = 2 THEN 'Richtig'
+    ELSE 'Es wurden nicht 2 Zeilen gefunden'
+  END AS message;
 ```

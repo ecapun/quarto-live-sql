@@ -1,6 +1,6 @@
 # Quarto Live SQL
 
-Minimaler, browserbasierter SQL-REPL für Quarto Live.  
+Browserbasierter SQL-REPL für Quarto Live.  
 PostgreSQL läuft vollständig im Browser (PGlite/WASM).
 
 ## Ausführung der Applikation
