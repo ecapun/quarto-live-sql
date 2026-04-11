@@ -10,12 +10,12 @@ filters:
 ---
 
 
-```{.sqlrepl lifecycle="beforeAll" group="demo1"}
+```{.sqlrepl lifecycle="beforeAll" envir="demo1"}
 DROP TABLE IF EXISTS demotable;
 CREATE TABLE demotable (id INT, name TEXT);
 ```
 
-```{.sqlrepl lifecycle="beforeEach" group="demo1"}
+```{.sqlrepl lifecycle="beforeEach" envir="demo1"}
 DELETE FROM demotable;
 INSERT INTO demotable VALUES
   (1, 'Alice'),
@@ -50,6 +50,6 @@ INSERT INTO demotable VALUES
   (30, 'Diana');
 ```
 
-```{.sqlrepl lifecycle="main" group="demo1"}
+```{.sqlrepl lifecycle="main" envir="demo1"}
 
 ```

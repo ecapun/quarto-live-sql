@@ -7,44 +7,44 @@ async function run() {
   const cells = document.querySelectorAll(".sqlrepl-cell");
   console.log("sqlrepl: cells", cells.length);
 
-  const beforeAllByGroup = new Map();
-  const beforeEachByGroup = new Map();
-  const executedBeforeAllGroups = new Set();
+  const beforeAllByEnvir = new Map();
+  const beforeEachByEnvir = new Map();
+  const executedBeforeAllEnvirs = new Set();
 
   // 1. Lifecycle-Blöcke einsammeln
   for (const cell of cells) {
     const lifecycle = cell.dataset.lifecycle || "main";
-    const group = cell.dataset.group || "";
+    const envir = cell.dataset.envir || "";
     const sql = cell.dataset.sql?.trim();
 
-    if (!sql || !group) continue;
+    if (!sql || !envir) continue;
 
     if (lifecycle === "beforeAll") {
-      beforeAllByGroup.set(group, sql);
+      beforeAllByEnvir.set(envir, sql);
     }
 
     if (lifecycle === "beforeEach") {
-      beforeEachByGroup.set(group, sql);
+      beforeEachByEnvir.set(envir, sql);
     }
   }
 
   // 2. Nur main-Blöcke mounten
   for (const cell of cells) {
     const lifecycle = cell.dataset.lifecycle || "main";
-    const group = cell.dataset.group || "";
+    const envir = cell.dataset.envir || "";
     const initialSql = cell.dataset.sql?.trim();
 
     if (lifecycle !== "main") continue;
 
     try {
-      const beforeAllSql = group ? beforeAllByGroup.get(group) : null;
-      if (group && beforeAllSql && !executedBeforeAllGroups.has(group)) {
+      const beforeAllSql = envir ? beforeAllByEnvir.get(envir) : null;
+      if (envir && beforeAllSql && !executedBeforeAllEnvirs.has(envir)) {
         await db.exec(beforeAllSql);
-        executedBeforeAllGroups.add(group);
+        executedBeforeAllEnvirs.add(envir);
       }
 
-      const beforeEachSql = group ? beforeEachByGroup.get(group) : null;
-      if (group && beforeEachSql) {
+      const beforeEachSql = envir ? beforeEachByEnvir.get(envir) : null;
+      if (envir && beforeEachSql) {
         await db.exec(beforeEachSql);
       }
 
@@ -74,7 +74,7 @@ async function run() {
       console.log("repl width", repl.clientWidth);
 
     } catch (e) {
-      console.error("sqlrepl lifecycle/mount error", e, { group, initialSql });
+      console.error("sqlrepl lifecycle/mount error", e, { envir, initialSql });
     }
   }
 }
