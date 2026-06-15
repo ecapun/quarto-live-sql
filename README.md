@@ -125,8 +125,6 @@ INSERT INTO shared_table VALUES (1, 'first');
 
 SELECT * FROM shared_table;
 ```
-```
-
 ---
 
 ## Project structure
